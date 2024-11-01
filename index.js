@@ -1,10 +1,12 @@
+require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
+const uri = process.env.MONGODB_URI;
 
 const app = express();
 const port = process.env.PORT || 3000;
 
-mongoose.connect('mongodb://localhost:27017/counterDB', { useNewUrlParser: true, useUnifiedTopology: true });
+mongoose.connect(uri, { useNewUrlParser: true, useUnifiedTopology: true });
 
 const counterSchema = new mongoose.Schema({
   siteIdentifier: { type: String, required: true },
