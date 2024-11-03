@@ -14,6 +14,7 @@ const counterSchema = new mongoose.Schema({
 });
 const Counter = mongoose.model('Counter', counterSchema);
 
+app.use(express.static(__dirname));
 
 app.get('/view', async (req, res) => {
   const siteIdentifier = req.query.siteIdentifier;
