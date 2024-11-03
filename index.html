@@ -9,10 +9,13 @@
   <p>Visitor count: <span id="counter"></span></p>
   <script>
     const counterElement = document.getElementById('counter');
-    const siteIdentifier = 'yourUniqueSiteID';
+    
+    const siteIdentifier = window.top !== window.self 
+      ? encodeURIComponent(document.referrer)
+      : 'defaultSiteID';
 
     async function getCounter() {
-      const response = await fetch(`https://your-backend-url/view?siteIdentifier=${siteIdentifier}`);
+      const response = await fetch(`https://visitor-count-t7vu.onrender.com/view?siteIdentifier=${siteIdentifier}`);
       const data = await response.json();
       counterElement.textContent = data.count;
     }
