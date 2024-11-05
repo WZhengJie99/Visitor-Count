@@ -6,7 +6,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page View Counter</title>
   <style>
-    body, p {
+    body,
+    p {
       margin: 0;
       padding: 0;
       width: auto;
@@ -15,6 +16,8 @@
     }
 
     #counter img {
+      width: 10%;
+      height: auto;
       margin: 2.5px;
     }
   </style>
@@ -28,14 +31,14 @@
     const urlParams = new URLSearchParams(window.location.search);
     const siteIdentifier = urlParams.get('siteIdentifier') || 'defaultSiteID';
     const style = urlParams.get('style') || 'numbers';
-  
+
     async function getCounter() {
       const response = await fetch(`https://visitor-count-t7vu.onrender.com/view?siteIdentifier=${encodeURIComponent(siteIdentifier)}`);
       const data = await response.json();
-  
+
       const countStr = String(data.count).padStart(7, '0');
       counterElement.innerHTML = '';
-  
+
       for (const digit of countStr) {
         const img = document.createElement('img');
         img.src = `/${style}/${digit}.png`;
@@ -43,9 +46,10 @@
         counterElement.appendChild(img);
       }
     }
-  
+
     getCounter();
   </script>
 
 </body>
+
 </html>
