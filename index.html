@@ -6,25 +6,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page View Counter</title>
   <style>
-    body,
-    p {
+    body {
       margin: 0;
       padding: 0;
-      width: auto;
-      height: auto;
-      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
     #counter img {
       width: 5%;
       height: auto;
       margin: 2.5px;
+      display: inline-block;
     }
   </style>
 </head>
 
 <body>
-  <p><span id="counter"></span></p>
+  <div id="counter"></div>
 
   <script>
     const counterElement = document.getElementById('counter');
