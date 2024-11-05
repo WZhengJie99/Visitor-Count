@@ -1,26 +1,47 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Page View Counter</title>
+  <style>
+    body, p {
+      margin: 0;
+      padding: 0;
+      width: auto;
+      height: auto;
+      overflow: hidden;
+    }
+  </style>
 </head>
+
 <body>
   <p>Visitor count: <span id="counter"></span></p>
+
   <script>
     const counterElement = document.getElementById('counter');
-    
-    const siteIdentifier = window.top !== window.self 
-      ? encodeURIComponent(document.referrer)
-      : 'defaultSiteID';
-
+    const urlParams = new URLSearchParams(window.location.search);
+    const siteIdentifier = urlParams.get('siteIdentifier') || 'defaultSiteID';
+    const style = urlParams.get('style') || 'numbers';
+  
     async function getCounter() {
-      const response = await fetch(`https://visitor-count-t7vu.onrender.com/view?siteIdentifier=${siteIdentifier}`);
+      const response = await fetch(`https://visitor-count-t7vu.onrender.com/view?siteIdentifier=${encodeURIComponent(siteIdentifier)}`);
       const data = await response.json();
-      counterElement.textContent = data.count;
+  
+      const countStr = String(data.count).padStart(7, '0');
+      counterElement.innerHTML = '';
+  
+      for (const digit of countStr) {
+        const img = document.createElement('img');
+        img.src = `/${style}/${digit}.png`;
+        img.alt = digit;
+        counterElement.appendChild(img);
+      }
     }
-
+  
     getCounter();
   </script>
+
 </body>
 </html>
