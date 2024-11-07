@@ -41,10 +41,15 @@ app.listen(port, () => {
   console.log(`Server running on port ${port}`);
 });
 
+
+//Canvas
 const { createCanvas, loadImage } = require('canvas');
+const path = require('path');
 
 app.get('/counter-image', async (req, res) => {
   const siteIdentifier = req.query.siteIdentifier;
+  const style = req.query.style || 'numbers';
+
   if (!siteIdentifier) {
     return res.status(400).json({ error: 'Site identifier is required' });
   }
@@ -59,19 +64,28 @@ app.get('/counter-image', async (req, res) => {
       await counter.save();
     }
 
-    const canvas = createCanvas(200, 50);
+    const countStr = String(counter.count).padStart(7, '0');
+
+    const digitWidth = 30;
+    const canvas = createCanvas(countStr.length * digitWidth, 50);
     const ctx = canvas.getContext('2d');
 
-    ctx.fillStyle = '#ffffff';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    ctx.font = '30px Arial';
-    ctx.fillStyle = '#000000';
-    ctx.fillText(`Views: ${counter.count}`, 10, 35);
+    for (let i = 0; i < countStr.length; i++) {
+      const digit = countStr[i];
+      const imgPath = path.join(__dirname, style, `${digit}.png`);
+
+      await loadImage(imgPath).then((img) => {
+        ctx.drawImage(img, i * digitWidth, 0, digitWidth, 50);
+      }).catch((error) => {
+        console.error(`Error loading image for digit ${digit}:`, error);
+      });
+    }
 
     res.setHeader('Content-Type', 'image/png');
     canvas.pngStream().pipe(res);
 
   } catch (error) {
+    console.error('Failed to generate counter image:', error);
     res.status(500).json({ error: 'Failed to generate counter image' });
   }
 });
