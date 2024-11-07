@@ -67,15 +67,17 @@ app.get('/counter-image', async (req, res) => {
     const countStr = String(counter.count).padStart(7, '0');
 
     const digitWidth = 30;
-    const canvas = createCanvas(countStr.length * digitWidth, 50);
+    const margin = 2.5;
+    const canvas = createCanvas(countStr.length * (digitWidth + margin) - margin, 50);
     const ctx = canvas.getContext('2d');
 
-    for (let i = 0; i < countStr.length; i++) {
-      const digit = countStr[i];
+    let x = 0; // Track x position for each image
+    for (const digit of countStr) {
       const imgPath = path.join(__dirname, style, `${digit}.png`);
 
       await loadImage(imgPath).then((img) => {
-        ctx.drawImage(img, i * digitWidth, 0, digitWidth, 50);
+        ctx.drawImage(img, x, 0, digitWidth, img.height);
+        x += digitWidth + padding;
       }).catch((error) => {
         console.error(`Error loading image for digit ${digit}:`, error);
       });
