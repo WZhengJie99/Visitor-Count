@@ -47,6 +47,9 @@ const { createCanvas, loadImage } = require('canvas');
 const path = require('path');
 
 app.get('/counter-image', async (req, res) => {
+  res.setHeader('Cache-Control', 'no-store'); // Prevents caching
+  res.setHeader('Content-Type', 'image/png');
+  
   const siteIdentifier = req.query.siteIdentifier;
   const style = req.query.style || 'numbers';
 
