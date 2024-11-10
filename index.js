@@ -68,27 +68,26 @@ app.get('/counter-image', async (req, res) => {
     }
 
     const countStr = String(counter.count).padStart(7, '0');
-    const digitWidth = 30;
     const margin = 2.5;
 
-    const firstDigitPath = path.join(__dirname, style, `${countStr[0]}.png`);
-    const firstImg = await loadImage(firstDigitPath);
-    const digitHeight = firstImg.height;
+    const images = await Promise.all(
+      [...countStr].map(digit => {
+        const imgPath = path.join(__dirname, style, `${digit}.png`);
+        return loadImage(imgPath);
+      })
+    );
 
-    const canvas = createCanvas(countStr.length * (digitWidth + margin) - margin, digitHeight);
+    const totalWidth = images.reduce((sum, img) => sum + img.width + margin, -margin);
+    const maxHeight = Math.max(...images.map(img => img.height));
+
+    const canvas = createCanvas(totalWidth, maxHeight);
     const ctx = canvas.getContext('2d');
 
     let x = 0; // Track x position for each image
-    for (const digit of countStr) {
-      const imgPath = path.join(__dirname, style, `${digit}.png`);
-
-      await loadImage(imgPath).then((img) => {
-        ctx.drawImage(img, x, 0, digitWidth, img.height);
-        x += digitWidth + margin;
-      }).catch((error) => {
-        console.error(`Error loading image for digit ${digit}:`, error);
-      });
-    }
+    images.forEach(img => {
+      ctx.drawImage(img, x, 0, img.width, img.height);
+      x += img.width + margin;
+    });
 
     res.setHeader('Content-Type', 'image/png');
     canvas.pngStream().pipe(res);
