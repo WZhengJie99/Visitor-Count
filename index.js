@@ -77,7 +77,7 @@ app.get('/counter-image', async (req, res) => {
 
       await loadImage(imgPath).then((img) => {
         ctx.drawImage(img, x, 0, digitWidth, img.height);
-        x += digitWidth + padding;
+        x += digitWidth + margin;
       }).catch((error) => {
         console.error(`Error loading image for digit ${digit}:`, error);
       });
