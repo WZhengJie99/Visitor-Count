@@ -68,10 +68,14 @@ app.get('/counter-image', async (req, res) => {
     }
 
     const countStr = String(counter.count).padStart(7, '0');
-
     const digitWidth = 30;
     const margin = 2.5;
-    const canvas = createCanvas(countStr.length * (digitWidth + margin) - margin, 50);
+
+    const firstDigitPath = path.join(__dirname, style, `${countStr[0]}.png`);
+    const firstImg = await loadImage(firstDigitPath);
+    const digitHeight = firstImg.height;
+
+    const canvas = createCanvas(countStr.length * (digitWidth + margin) - margin, digitHeight);
     const ctx = canvas.getContext('2d');
 
     let x = 0; // Track x position for each image
