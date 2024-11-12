@@ -14,18 +14,23 @@
     }
 
     #counter {
-    justify-content: start;
-    margin: 0 0 0 0;
-    padding: 0 0 0 0;
-    display: contents;
+      justify-content: start;
+      margin: 0 0 0 0;
+      padding: 0 0 0 0;
+      display: contents;
     }
 
-    #counter img {
+    #counter img,
+    #testingContainer img {
       width: 10%;
       height: auto;
-      margin: 2.5px;
+      margin: 0 0 0 0;
       padding: 0 0 0 0;
       overflow: hidden;
+    }
+    
+    #testingContainer {
+      display: none;
     }
   </style>
 </head>
@@ -33,11 +38,23 @@
 <body>
   <div id="counter"></div>
 
+  <!-- Testing Container -->
+  <!-- /Visitor-Count/index.html?test=true -->
+  <!-- Add ?test=true to view demo-->
+  <!-- ------------------------------------------------------------------------------------------------------ -->
+
+  <div class="testing-container" id="testingContainer"></div>
+
+  <!-- ------------------------------------------------------------------------------------------------------ -->
+  <!-- End of Testing Container -->
+
   <script>
     const counterElement = document.getElementById('counter');
     const urlParams = new URLSearchParams(window.location.search);
     const siteIdentifier = urlParams.get('siteIdentifier') || 'defaultSiteID';
     const style = urlParams.get('style') || 'numbers';
+    const testingContainer = document.getElementById('testingContainer');
+    const isTestMode = urlParams.has('test');
 
     async function getCounter() {
       const response = await fetch(`https://visitor-count-t7vu.onrender.com/view?siteIdentifier=${encodeURIComponent(siteIdentifier)}`);
@@ -48,13 +65,31 @@
 
       for (const digit of countStr) {
         const img = document.createElement('img');
-        img.src = `/${style}/${digit}.png`;
+        img.src = `./styles/${style}/${digit}.png`;
         img.alt = digit;
         counterElement.appendChild(img);
       }
     }
 
+    function loadTestingImages() {
+      const digits = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+      testingContainer.innerHTML = '';
+
+      digits.forEach(digit => {
+        const img = document.createElement('img');
+        // replace ${style} with the style you want to view in /Visitor-Count/index.html?test=true
+        img.src = `./styles/${style}/${digit}.png`;
+        img.alt = digit;
+        testingContainer.appendChild(img);
+      });
+    }
+
     getCounter();
+
+    if (isTestMode) {
+      testingContainer.style.display = 'flex';
+      loadTestingImages();
+    }
   </script>
 
 </body>

@@ -68,11 +68,11 @@ app.get('/counter-image', async (req, res) => {
     }
 
     const countStr = String(counter.count).padStart(7, '0');
-    const margin = 2.5;
+    const margin = 0;
 
     const images = await Promise.all(
       [...countStr].map(digit => {
-        const imgPath = path.join(__dirname, style, `${digit}.png`);
+        const imgPath = path.join(__dirname, 'styles', style, `${digit}.png`);
         return loadImage(imgPath);
       })
     );
