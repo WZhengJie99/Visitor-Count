@@ -49,26 +49,17 @@ const path = require('path');
 app.get('/counter-image', async (req, res) => {
   res.setHeader('Cache-Control', 'no-store'); // Prevents caching
   res.setHeader('Content-Type', 'image/png');
-  
+
   const siteIdentifier = req.query.siteIdentifier;
   const style = req.query.style || 'numbers';
+  const isTestMode = req.query.test === 'true';
 
   if (!siteIdentifier) {
     return res.status(400).json({ error: 'Site identifier is required' });
   }
 
   try {
-    let counter = await Counter.findOne({ siteIdentifier });
-    if (!counter) {
-      counter = new Counter({ siteIdentifier, count: 1 });
-      await counter.save();
-    } else {
-      counter.count += 1;
-      await counter.save();
-    }
-
-    const countStr = String(counter.count).padStart(7, '0');
-    const margin = 0;
+    const countStr = isTestMode ? '0123456789' : await getVisitorCount(siteIdentifier);
 
     const images = await Promise.all(
       [...countStr].map(digit => {
@@ -77,16 +68,16 @@ app.get('/counter-image', async (req, res) => {
       })
     );
 
-    const totalWidth = images.reduce((sum, img) => sum + img.width + margin, -margin);
+    const totalWidth = images.reduce((sum, img) => sum + img.width, 0);
     const maxHeight = Math.max(...images.map(img => img.height));
 
     const canvas = createCanvas(totalWidth, maxHeight);
     const ctx = canvas.getContext('2d');
 
-    let x = 0; // Track x position for each image
+    let x = 0;
     images.forEach(img => {
       ctx.drawImage(img, x, 0, img.width, img.height);
-      x += img.width + margin;
+      x += img.width;
     });
 
     res.setHeader('Content-Type', 'image/png');
@@ -97,3 +88,15 @@ app.get('/counter-image', async (req, res) => {
     res.status(500).json({ error: 'Failed to generate counter image' });
   }
 });
+
+async function getVisitorCount(siteIdentifier) {
+  let counter = await Counter.findOne({ siteIdentifier });
+  if (!counter) {
+    counter = new Counter({ siteIdentifier, count: 1 });
+    await counter.save();
+  } else {
+    counter.count += 1;
+    await counter.save();
+  }
+  return String(counter.count).padStart(7, '0');
+}
