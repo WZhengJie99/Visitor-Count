@@ -94,6 +94,8 @@ Contributions are welcomed with pull requests!
 
 1. Create a new folder inside the ```styles``` folder with a unique name that represents the new style.
 2. Name the number images by their numerical digit only, so each file should simply be named ```0```, ```1```, ```2```, up to ```9```, with no additional labels.
+3. Update this README.md by adding your style under the [Themes](#themes) section.
+4. Add your style name inside the ```const styleFolders``` array in the ```docs/index.html``` file. This allows the style to appear in the dropdown menu on the website.
 
 ## Acknowledgements
 

@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Visitor Count by WZhengJie99</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        label, select, input, button {
+            display: block;
+            margin-top: 10px;
+            width: 100%;
+        }
+
+        button {
+            margin-top: 20px;
+            padding: 5px 0px 5px 0px;
+        }
+
+        .output-container {
+            position: relative;
+        }
+
+        .output {
+            background-color: transparent;
+            border: 1px solid black;
+            padding: 10px;
+            font-family: monospace;
+            overflow-x: auto;
+            width: 90%;
+            white-space: pre-wrap;
+        }
+
+        .copy-button {
+            position: absolute;
+            right: 0px;
+            top: 18px;
+            background-color: #ddd;
+            color: black;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            line-height: 1;
+        }
+        
+        .style-preview {
+            display: flex;
+            gap: 0px;
+            margin-top: 20px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .style-preview img {
+            width: 60px;
+            object-fit: contain;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 0 0 -20px 0;
+            padding: 0;
+        }
+
+        #visitor-count-iframe {
+            display: inline;
+            padding: 5px 0 0 5px;
+            border: 1px solid #000000;
+            border-radius: 5px;
+            width: 35%;
+            height: 50px;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="header-container">
+        <h1>Visitor Count</h1>
+        <iframe src="https://visitor-count-t7vu.onrender.com/?siteIdentifier=https://wzhengjie99.github.io/Visitor-Count/&style=numbers" id="visitor-count-iframe"></iframe>
+    </div>
+
+    <label for="siteIdentifier">Your Website URL:</label>
+    <input type="text" id="siteIdentifier" placeholder="https://yourwebsite.com" required>
+
+    <label for="style">Select Style:</label>
+
+    <div id="stylePreviews" class="style-preview"></div>
+
+    <select id="style" onchange="updatePreviews()">
+        <!-- Styles populated here -->
+    </select>
+
+    <button onclick="generateCode()">Generate Code</button>
+
+    <h2>Generated Code</h2>
+
+    <div class="output-container">
+        <h3>Iframe</h3>
+        <pre class="output" id="iframeOutput"></pre>
+        <button class="copy-button" onclick="copyCode('iframeOutput')">📋</button>
+    </div>
+
+    <div class="output-container">
+        <h3>Image</h3>
+        <pre class="output" id="imgOutput"></pre>
+        <button class="copy-button" onclick="copyCode('imgOutput')">📋</button>
+    </div>
+
+    <div class="output-container">
+        <h3>Markdown</h3>
+        <pre class="output" id="markdownOutput"></pre>
+        <button class="copy-button" onclick="copyCode('markdownOutput')">📋</button>
+    </div>
+
+    <div style="padding-top: 10px;">
+        <a href="https://github.com/WZhengJie99/Visitor-Count" id="github-link" style="text-decoration: none;">
+            Github: Visitor-Count
+        </a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Add new styles here / Add new styles here / Add new styles here / Add new styles here / Add new styles here
+            // Add new styles here / Add new styles here / Add new styles here / Add new styles here / Add new styles here
+            const styleFolders = ['numbers', 'cards-spades'];
+            // Add new styles here / Add new styles here / Add new styles here / Add new styles here / Add new styles here
+            // Add new styles here / Add new styles here / Add new styles here / Add new styles here / Add new styles here
+
+
+            const styleSelect = document.getElementById('style');
+            const stylePreviews = document.getElementById('stylePreviews');
+
+            styleFolders.forEach(style => {
+                const option = document.createElement('option');
+                option.value = style;
+                option.textContent = style;
+                styleSelect.appendChild(option);
+            });
+            updatePreviews();
+        });
+
+        function updatePreviews() {
+            const style = document.getElementById('style').value;
+            const stylePreviews = document.getElementById('stylePreviews');
+            stylePreviews.innerHTML = '';
+
+            for (let i = 0; i < 10; i++) {
+                const imgPreview = document.createElement('img');
+                imgPreview.src = `../styles/${style}/${i}.png`;
+                imgPreview.alt = `Preview of ${style} number ${i}`;
+                stylePreviews.appendChild(imgPreview);
+            }
+        }
+
+        function generateCode() {
+            const siteIdentifier = document.getElementById('siteIdentifier').value;
+            const style = document.getElementById('style').value;
+
+            if (!siteIdentifier) {
+                alert('Please enter your website URL.');
+                return;
+            }
+
+            const iframeCode = `<iframe src="https://visitor-count-t7vu.onrender.com/?siteIdentifier=${siteIdentifier}&style=${style}" id="visitor-count-iframe"></iframe>`;
+            const imgCode = `<img alt="Visitor Count" src="https://visitor-count-t7vu.onrender.com/counter-image?siteIdentifier=${siteIdentifier}&style=${style}">`;
+            const markdownCode = `![Visitor Count](https://visitor-count-t7vu.onrender.com/counter-image?siteIdentifier=${siteIdentifier}&style=${style})`;
+
+            document.getElementById('iframeOutput').innerText = iframeCode;
+            document.getElementById('imgOutput').innerText = imgCode;
+            document.getElementById('markdownOutput').innerText = markdownCode;
+        }
+
+        function copyCode(elementId) {
+            const codeElement = document.getElementById(elementId);
+            navigator.clipboard.writeText(codeElement.innerText).then(() => {
+                alert('Code copied to clipboard!');
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+            });
+        }
+    </script>
+
+</body>
+
+</html>
